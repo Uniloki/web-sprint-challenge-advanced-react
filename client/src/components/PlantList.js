@@ -14,20 +14,37 @@ export default class PlantList extends Component {
 		super()
 		this.state = {
 			plants: [],
+			search: '',
 		}
 	}
-
+	handleSearch = (e) => {
+		return this.setState({ search: e.target.value })
+	}
 	componentDidMount() {
 		axios.get(`http://localhost:3333/plants`).then((res) => {
 			this.setState({ plants: res.data.plantsData })
 			console.log(res)
 		})
 	}
-
 	render() {
+		const filteredPlants = this.state.plants.filter((plant) => {
+			return plant.name.toLowerCase().includes(this.state.search)
+		})
+		//almost done search bar
 		return (
 			<main className="plant-list">
-				{this.state?.plants?.map((plant) => (
+				<form>
+					<h2>Search</h2>
+					<label>
+						Plant Name:
+						<input
+							name="plantName"
+							// value={values.firstName}
+							onChange={this.handleSearch}
+						/>
+					</label>
+				</form>
+				{filteredPlants.map((plant) => (
 					<div className="plant-card" key={plant.id}>
 						<img className="plant-image" src={plant.img} alt={plant.name} />
 						<div className="plant-details">
